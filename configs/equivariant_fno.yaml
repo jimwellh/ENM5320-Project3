@@ -1,0 +1,14 @@
+model_type: equivariant_fno
+in_channels: 3
+out_channels: 3
+fno_modes: 16
+fno_width: 64
+n_layers: 4
+group: p4
+epochs: 200
+batch_size: 16
+lr: 1.0e-3
+device: cuda
+checkpoint_dir: models/equivariant_fno
+use_pino: false
+pde_weight: 0.0

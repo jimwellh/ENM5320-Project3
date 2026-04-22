@@ -1,0 +1,45 @@
+# Data files — too large for git (use DVC or manual transfer)
+data/raw/*.npz
+data/processed/*.npz
+data/splits/*.npy
+
+# Model checkpoints
+models/**/*.pt
+models/**/*.pth
+models/**/*.ckpt
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+*.so
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Warp kernel cache
+~/.cache/warp/
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Conda / virtualenv
+*.conda
+*.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code internals
+.claude/projects/

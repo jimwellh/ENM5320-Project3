@@ -1,0 +1,10 @@
+re_min: 20.0
+re_max: 200.0
+n_re: 20
+cx_range: [0.3, 0.5]
+cy_range: [0.4, 0.6]
+n_positions: 25
+nx: 128
+ny: 128
+cylinder_radius: 0.05
+output_dir: data/raw
