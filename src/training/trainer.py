@@ -68,3 +68,50 @@ class Trainer:
                     self.optimizer.step()
                 total_loss += loss.item()
         return total_loss / len(loader)
+
+
+if __name__ == "__main__":
+    import json
+    import argparse
+    import torch
+    from pathlib import Path
+    from omegaconf import OmegaConf
+    from torch.utils.data import DataLoader
+    from src.models.model_factory import build_model
+    from src.training.dataset import FlowDataset
+    from src.training.losses import DataLoss
+
+    parser = argparse.ArgumentParser(description="Train FNO baseline.")
+    parser.add_argument("--config", required=True,
+                        help="Path to YAML config (e.g. configs/fno_baseline.yaml)")
+    cli = parser.parse_args()
+    cfg = OmegaConf.load(cli.config)
+
+    model = build_model(
+        cfg.model_type,
+        in_channels=cfg.in_channels,
+        out_channels=cfg.out_channels,
+        modes=cfg.fno_modes,
+        width=cfg.fno_width,
+        n_layers=cfg.n_layers,
+    )
+
+    train_ds = FlowDataset("data/processed/dataset.npz", "data/splits/train_idx.npy")
+    val_ds   = FlowDataset("data/processed/dataset.npz", "data/splits/val_idx.npy")
+    train_loader = DataLoader(train_ds, batch_size=cfg.batch_size, shuffle=True,
+                              num_workers=2, pin_memory=True)
+    val_loader   = DataLoader(val_ds,   batch_size=cfg.batch_size, shuffle=False,
+                              num_workers=2, pin_memory=True)
+
+    optimizer = torch.optim.Adam(model.parameters(), lr=cfg.lr)
+    loss_fn   = DataLoss()
+
+    trainer = Trainer(model, optimizer, loss_fn, device=cfg.device,
+                      checkpoint_dir=cfg.checkpoint_dir)
+    history = trainer.train(train_loader, val_loader, epochs=cfg.epochs)
+
+    out_dir = Path(cfg.checkpoint_dir)
+    with open(out_dir / "history.json", "w") as fh:
+        json.dump(history, fh, indent=2)
+    print(f"Training complete. Best val loss: {min(history['val_loss']):.4f}")
+    print(f"Checkpoint: {out_dir / 'best.pt'}")

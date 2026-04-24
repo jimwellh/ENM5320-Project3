@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import numpy as np
 from pathlib import Path
 
@@ -22,7 +23,8 @@ class DataPreprocessor:
         processed_dir: Output for dataset.npz and stats.npz.
         splits_dir: Output for train/val/test index arrays (.npy).
         re_min, re_max: Dataset-level Re_D bounds for normalization.
-        train_ratio, val_ratio: Split fractions (test = remainder).
+        train_ratio: Fraction of samples for training (default 0.70).
+        val_ratio: Fraction of samples for validation (default 0.15).
     """
 
     def __init__(
@@ -32,7 +34,7 @@ class DataPreprocessor:
         splits_dir: str = "data/splits",
         re_min: float = 20.0,
         re_max: float = 200.0,
-        train_ratio: float = 0.7,
+        train_ratio: float = 0.70,
         val_ratio: float = 0.15,
     ):
         self.raw_dir = Path(raw_dir)
@@ -125,3 +127,16 @@ class DataPreprocessor:
             targets[n, :, :, 1] = (s["v"] - stats["v_mean"]) / stats["v_std"]
             targets[n, :, :, 2] = (s["p"] - stats["p_mean"]) / stats["p_std"]
         return targets
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Preprocess raw CFD snapshots into training data.")
+    parser.add_argument("--raw_dir",       default="data/raw")
+    parser.add_argument("--processed_dir", default="data/processed")
+    parser.add_argument("--splits_dir",    default="data/splits")
+    args = parser.parse_args()
+    DataPreprocessor(
+        raw_dir=args.raw_dir,
+        processed_dir=args.processed_dir,
+        splits_dir=args.splits_dir,
+    ).process()
