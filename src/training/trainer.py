@@ -50,7 +50,7 @@ class Trainer:
                 torch.save(self.model.state_dict(), self.checkpoint_dir / "best.pt")
 
             if epoch % 10 == 0:
-                print(f"Epoch {epoch:4d} | train={train_loss:.4f} | val={val_loss:.4f}")
+                print(f"Epoch {epoch:4d} | train={train_loss:.4f} | val={val_loss:.4f}", flush=True)
 
         return history
 

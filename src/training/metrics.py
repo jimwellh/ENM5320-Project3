@@ -18,8 +18,8 @@ def relative_l2_error(pred: torch.Tensor, target: torch.Tensor) -> float:
     Returns:
         Mean per-sample relative L2 error (scalar float).
     """
-    diff_norm   = torch.norm(pred - target, dim=(1, 2, 3))        # (N,)
-    target_norm = torch.norm(target,        dim=(1, 2, 3)) + 1e-8  # (N,)
+    diff_norm   = torch.linalg.vector_norm(pred - target, dim=(1, 2, 3))        # (N,)
+    target_norm = torch.linalg.vector_norm(target,        dim=(1, 2, 3)) + 1e-8  # (N,)
     return (diff_norm / target_norm).mean().item()
 
 
@@ -95,10 +95,12 @@ if __name__ == "__main__":
     # stats channels: [u, v, p] matching target channel order
     stats = np.load("data/processed/stats.npz")
     means = torch.tensor(
-        [stats["u_mean"], stats["v_mean"], stats["p_mean"]], dtype=torch.float32
+        [float(stats["u_mean"]), float(stats["v_mean"]), float(stats["p_mean"])],
+        dtype=torch.float32,
     ).view(1, 3, 1, 1)
     stds = torch.tensor(
-        [stats["u_std"], stats["v_std"], stats["p_std"]], dtype=torch.float32
+        [float(stats["u_std"]), float(stats["v_std"]), float(stats["p_std"])],
+        dtype=torch.float32,
     ).view(1, 3, 1, 1)
 
     preds_phys   = preds_cat   * stds + means
