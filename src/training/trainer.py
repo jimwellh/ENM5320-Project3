@@ -87,14 +87,16 @@ if __name__ == "__main__":
     cli = parser.parse_args()
     cfg = OmegaConf.load(cli.config)
 
-    model = build_model(
-        cfg.model_type,
+    _model_kwargs = dict(
         in_channels=cfg.in_channels,
         out_channels=cfg.out_channels,
         modes=cfg.fno_modes,
         width=cfg.fno_width,
         n_layers=cfg.n_layers,
     )
+    if hasattr(cfg, "group"):
+        _model_kwargs["group"] = cfg.group
+    model = build_model(cfg.model_type, **_model_kwargs)
 
     train_ds = FlowDataset("data/processed/dataset.npz", "data/splits/train_idx.npy")
     val_ds   = FlowDataset("data/processed/dataset.npz", "data/splits/val_idx.npy")

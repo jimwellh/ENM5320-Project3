@@ -2,7 +2,7 @@ model_type: equivariant_fno
 in_channels: 3
 out_channels: 3
 fno_modes: 16
-fno_width: 64
+fno_width: 16
 n_layers: 4
 group: p4
 epochs: 200
