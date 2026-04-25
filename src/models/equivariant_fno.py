@@ -62,6 +62,14 @@ class EquivariantFNOBlock(nn.Module):
     Path B (spectral):    extract `.tensor`, apply SpectralConv2d, wrap back.
     Output: ReLU(A + B) wrapped as GeometricTensor.
 
+    NOTE — partial equivariance: Path B applies an unconstrained channel-mixing
+    spectral convolution on the raw underlying tensor, which does NOT respect the
+    regular_repr fibre permutation of p4. Therefore this block is only *partially*
+    equivariant — the equivariant inductive bias comes from Path A, while Path B
+    provides the global receptive field of FNO. In Milestone 3 experiments this
+    architecture is expected to generalise better than a vanilla FNO under
+    rotation, but it is NOT a provably equivariant operator.
+
     Args:
         feat_type: escnn FieldType for both input and output.
         modes:     Fourier modes for the spectral path.
@@ -121,6 +129,7 @@ class EquivariantFNO(nn.Module):
             "The output feature type encodes [u, v] as irrep(1) and [p] as "
             "trivial_repr, which together have exactly 3 channels."
         )
+        assert width % 2 == 0, f"width must be even (got {width})"
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.modes = modes
@@ -144,6 +153,7 @@ class EquivariantFNO(nn.Module):
         # Store feat types needed in forward()
         self.feat_in = feat_in
         self.feat_hidden = feat_hidden
+        self.feat_half = feat_half
 
         # --- Layers ---
         # Lifting: (B, in_channels, H, W) → (B, width*4, H, W)
@@ -178,8 +188,9 @@ class EquivariantFNO(nn.Module):
         for block in self.blocks:
             h = block(h)
 
-        # Project to output
+        # Project to output (ReLU between proj1 and proj2)
         h = self.proj1(h)
+        h = enn.GeometricTensor(F.relu(h.tensor), self.feat_half)
         h = self.proj2(h)
 
         # Return raw tensor (B, 3, H, W)
