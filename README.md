@@ -16,7 +16,7 @@ This project trains equivariant neural operators to predict 2D fluid flow fields
 - Fourier Neural Operators and spectral methods
 - Physics-informed loss via Fourier spectral differentiation (consistent with L3 spectral differentiation)
 
-*Note: This specific folder `ENM5320_Project3` is the WSL part of the project*
+*Note: This specific folder `ENM5320_Project3` is the WSL part of the project. Check [https://github.com/jimwellh/ENM5320-Project3](https://github.com/jimwellh/ENM5320_FinalProject_Omniverse) for the Windows part.*
 
 ---
 
