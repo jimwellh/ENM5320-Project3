@@ -5,10 +5,12 @@ fno_modes: 16
 fno_width: 16
 n_layers: 4
 group: p4
-epochs: 200
+epochs: 100
 batch_size: 16
 lr: 1.0e-3
 device: cuda
-checkpoint_dir: models/equivariant_fno
+checkpoint_dir: models/exp1_efno
 use_pino: false
 pde_weight: 0.0
+train_split: train_cy_lower.npy
+val_split: val_cy_lower.npy

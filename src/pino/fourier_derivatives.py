@@ -21,7 +21,7 @@ def spectral_grad(f: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
 
     kx = torch.fft.rfftfreq(nx, d=1.0 / nx).to(f.device)
     ky = torch.fft.fftfreq(ny, d=1.0 / ny).to(f.device)
-    KX, KY = torch.meshgrid(ky, kx, indexing="ij")
+    KY, KX = torch.meshgrid(ky, kx, indexing="ij")
     KX = KX.unsqueeze(0).unsqueeze(0)
     KY = KY.unsqueeze(0).unsqueeze(0)
 
@@ -44,7 +44,7 @@ def spectral_laplacian(f: torch.Tensor) -> torch.Tensor:
 
     kx = torch.fft.rfftfreq(nx, d=1.0 / nx).to(f.device)
     ky = torch.fft.fftfreq(ny, d=1.0 / ny).to(f.device)
-    KX, KY = torch.meshgrid(ky, kx, indexing="ij")
+    KY, KX = torch.meshgrid(ky, kx, indexing="ij")
     KX = KX.unsqueeze(0).unsqueeze(0)
     KY = KY.unsqueeze(0).unsqueeze(0)
 
