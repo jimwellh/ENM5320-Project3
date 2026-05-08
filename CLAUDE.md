@@ -1,4 +1,4 @@
-# ENM 5320 Project 3 — Equivariant Neural Surrogates for Real-Time Fluid Digital Twins
+# ENM 5320 Final Project — Equivariant Neural Surrogates for Real-Time Fluid Digital Twins
 
 ## Project Overview
 
