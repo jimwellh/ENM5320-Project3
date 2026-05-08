@@ -28,6 +28,17 @@ class CylinderGeometry:
         """
         return (self.X - cx) ** 2 + (self.Y - cy) ** 2 <= radius ** 2
 
+    def make_ellipse_mask(self, cx: float, cy: float, rx: float = 0.05, ry: float = 0.025) -> np.ndarray:
+        """Return boolean solid mask (ny, nx), True inside the ellipse.
+
+        Args:
+            cx: Ellipse center x, normalized [0, 1].
+            cy: Ellipse center y, normalized [0, 1].
+            rx: Ellipse semi-major axis, normalized [0, 1].
+            ry: Ellipse semi-minor axis, normalized [0, 1].
+        """
+        return ((self.X - cx) / rx) ** 2 + ((self.Y - cy) / ry) ** 2 <= 1.0
+
     def rotate_mask(self, mask: np.ndarray, angle_deg: float) -> np.ndarray:
         """Rotate obstacle mask by angle around the domain center.
 

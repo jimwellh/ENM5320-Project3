@@ -6,7 +6,7 @@ from __future__ import annotations
 import numpy as np
 from pathlib import Path
 
-DEFAULT_OUTPUT_DIR = "/mnt/c/Users/jimwell/omniverse_assets"
+DEFAULT_OUTPUT_DIR = "/mnt/c/Users/jimwe/omniverse_assets"
 
 # Physics-based upper bound for velocity magnitude (Re=20-200, U_inf=1.0).
 # Used as a stable per-session color scale so colors don't flicker as the
@@ -78,10 +78,8 @@ def export_flow_to_usd(
     mesh.GetFaceVertexCountsAttr().Set(face_vertex_counts)
     mesh.GetFaceVertexIndicesAttr().Set(face_vertex_indices)
 
-    # Velocity magnitude → stable blue-to-red per-vertex color.
-    # np.clip ensures values above v_max saturate to red rather than rescaling.
     vel_mag = np.sqrt(u ** 2 + v ** 2)
-    mag_norm = np.clip(vel_mag / v_max, 0.0, 1.0).ravel()
+    mag_norm = (vel_mag / (vel_mag.max() + 1e-8)).ravel()
     color_pv = UsdGeom.PrimvarsAPI(mesh).CreatePrimvar(
         "displayColor",
         Sdf.ValueTypeNames.Color3fArray,

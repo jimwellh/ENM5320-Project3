@@ -98,8 +98,10 @@ if __name__ == "__main__":
         _model_kwargs["group"] = cfg.group
     model = build_model(cfg.model_type, **_model_kwargs)
 
-    train_ds = FlowDataset("data/processed/dataset.npz", "data/splits/train_idx.npy")
-    val_ds   = FlowDataset("data/processed/dataset.npz", "data/splits/val_idx.npy")
+    train_split = getattr(cfg, "train_split", "train_idx.npy")
+    val_split   = getattr(cfg, "val_split", "val_idx.npy")
+    train_ds = FlowDataset("data/processed/dataset.npz", f"data/splits/{train_split}")
+    val_ds   = FlowDataset("data/processed/dataset.npz", f"data/splits/{val_split}")
     train_loader = DataLoader(train_ds, batch_size=cfg.batch_size, shuffle=True,
                               num_workers=2, pin_memory=True)
     val_loader   = DataLoader(val_ds,   batch_size=cfg.batch_size, shuffle=False,
